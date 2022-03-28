@@ -4,19 +4,35 @@ import '../dao/notes.dart';
 import '../models/note.dart';
 import 'package:flutter_notes/theme/note_theme.dart';
 
+enum SortBy {
+  modifiedAt,
+  title,
+}
+
+enum SortOrder {
+  ascending,
+  descending,
+}
+
 class NotesService {
-  static Future<List<Map<String, dynamic>>> getNotes(String sortBy) async {
+  static Future<List<Map<String, dynamic>>> getNotes(SortBy sortBy, SortOrder sortOrder) async {
     NotesDatabase notesDb = NotesDatabase();
     await notesDb.initDatabase();
     List<Map> notesList = await notesDb.getAllNotes();
     await notesDb.closeDatabase();
     List<Map<String, dynamic>> notesData = List<Map<String, dynamic>>.from(notesList);
-    if(sortBy == 'title') {
-      notesData.sort((a, b) => (a['title']).compareTo(b['title']));
+    if (sortBy == SortBy.modifiedAt) {
+      if (sortOrder == SortOrder.descending) {
+        notesData.sort((a, b) => (dateFormat.parse(b[sortBy.name])).compareTo(dateFormat.parse(a[sortBy.name])));
+      } else {
+        notesData.sort((a, b) => (dateFormat.parse(a[sortBy.name]).compareTo(dateFormat.parse(b[sortBy.name]))));
+      }
+    }
+    else
+    if (sortOrder == SortOrder.descending) {
+      notesData.sort((a, b) => (b[sortBy.name]).compareTo(a[sortBy.name]));
     } else {
-      notesData.sort((a, b) =>
-      (dateFormat.parse(b['modifiedAt']).compareTo(
-          dateFormat.parse(a['modifiedAt']))));
+      notesData.sort((a, b) => (a[sortBy.name]).compareTo(b[sortBy.name]));
     }
     return notesData;
   }

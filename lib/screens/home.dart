@@ -17,6 +17,8 @@ class _Home extends State<Home> {
 
   late List<Map<String, dynamic>> notesData;
   List<int> selectedNoteIds = [];
+  SortBy sortBy = SortBy.modifiedAt;
+  SortOrder sortOrder = SortOrder.descending;
 
   void afterNavigatorPop() {
     setState(() {});
@@ -50,38 +52,57 @@ class _Home extends State<Home> {
     }
   }
 
-  // Widget _buildPopupDialog(BuildContext context) {
-  //   return AlertDialog(
-  //     title: const Text('Popup example'),
-  //     content: Column(
-  //       mainAxisSize: MainAxisSize.min,
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: const <Widget>[
-  //         Text("Hello"),
-  //       ],
-  //     ),
-  //     actions: <Widget>[
-  //       FlatButton(
-  //         onPressed: () {
-  //           Navigator.of(context).pop();
-  //         },
-  //         textColor: Theme.of(context).primaryColor,
-  //         child: const Text('Close'),
-  //       ),
-  //     ],
-  //   );
-  // }
-
   void handleSort() {
-    // showDialog(
-    //   context: context,
-    //   builder: (BuildContext context) => _buildPopupDialog(context),
-    // );
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                  title: const Text("Title"),
+                  onTap: () {
+                    setState(() {
+                      sortBy = SortBy.title;
+                    });
+                    Navigator.pop(context);
+                  }),
+              ListTile(
+                  title: const Text("Date"),
+                  onTap: () {
+                    setState(() {
+                      sortBy = SortBy.modifiedAt;
+                    });
+                    Navigator.pop(context);
+                  }),
+              ListTile(
+                  title: const Text("Ascending"),
+                  onTap: () {
+                    setState(() {
+                      sortOrder = SortOrder.ascending;
+                    });
+                    Navigator.pop(context);
+                  }),
+              ListTile(
+                  title: const Text("Descending"),
+                  onTap: () {
+                    setState(() {
+                      sortOrder = SortOrder.descending;
+                    });
+                    Navigator.pop(context);
+                  }),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  Future<List<Map<String, dynamic>>> handleRead({String sortBy = "date"}) async {
+  Future<List<Map<String, dynamic>>> handleRead() async {
     try {
-      return NotesService.getNotes(sortBy);
+      return NotesService.getNotes(sortBy, sortOrder);
     } catch (e) {
       debugPrint('Error retrieving notes');
       return [{}];
