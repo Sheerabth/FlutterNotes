@@ -21,7 +21,8 @@ class NotesDatabase {
               id INTEGER PRIMARY KEY AUTOINCREMENT,
               title TEXT,
               content TEXT,
-              noteColor TEXT
+              noteColor TEXT,
+              modifiedAt TEXT
             )
           '''
         );

@@ -1,15 +1,18 @@
+import 'package:flutter_notes/theme/note_theme.dart';
+
 class Note {
   int? id;
   String title;
   String content;
   String noteColor;
+  String modifiedAt;
 
   Note({
     this.id,
     this.title = "Note",
     this.content = "Text",
-    this.noteColor = "red"
-  });
+    this.noteColor = "purple",
+  }): modifiedAt = dateFormat.format(DateTime.now());
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> data = <String, dynamic>{};
@@ -19,6 +22,7 @@ class Note {
     data['title'] = title;
     data['content'] = content;
     data['noteColor'] = noteColor;
+    data['modifiedAt'] = modifiedAt;
     return data;
   }
 
@@ -28,6 +32,7 @@ class Note {
       'title': title,
       'content': content,
       'noteColor': noteColor,
+      'modifiedAt': modifiedAt
     }.toString();
   }
 }
