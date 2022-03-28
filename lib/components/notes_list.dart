@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_notes/screens/update.dart';
-import 'package:flutter_notes/theme/note_colors.dart';
+import 'package:flutter_notes/theme/note_theme.dart';
 
 class AllNoteLists extends StatelessWidget {
   final dynamic data;

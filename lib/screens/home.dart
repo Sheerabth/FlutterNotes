@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_notes/services/notes.dart';
 import 'package:flutter_notes/screens/update.dart';
-import 'package:flutter_notes/theme/note_colors.dart';
+import 'package:flutter_notes/theme/note_theme.dart';
 import 'package:flutter_notes/components/notes_list.dart';
 
 // Home Screen
@@ -40,7 +40,7 @@ class _Home extends State<Home> {
 
   void handleDelete() async {
     try {
-      NotesService.deleteNote(selectedNoteIds);
+      await NotesService.deleteNote(selectedNoteIds);
     } catch (e) {
       debugPrint('Db error');
     } finally {
@@ -50,9 +50,38 @@ class _Home extends State<Home> {
     }
   }
 
-  Future<List<Map<String, dynamic>>> handleRead() async {
+  // Widget _buildPopupDialog(BuildContext context) {
+  //   return AlertDialog(
+  //     title: const Text('Popup example'),
+  //     content: Column(
+  //       mainAxisSize: MainAxisSize.min,
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: const <Widget>[
+  //         Text("Hello"),
+  //       ],
+  //     ),
+  //     actions: <Widget>[
+  //       FlatButton(
+  //         onPressed: () {
+  //           Navigator.of(context).pop();
+  //         },
+  //         textColor: Theme.of(context).primaryColor,
+  //         child: const Text('Close'),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  void handleSort() {
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) => _buildPopupDialog(context),
+    // );
+  }
+
+  Future<List<Map<String, dynamic>>> handleRead({String sortBy = "date"}) async {
     try {
-      return NotesService.getNotes();
+      return NotesService.getNotes(sortBy);
     } catch (e) {
       debugPrint('Error retrieving notes');
       return [{}];
@@ -67,13 +96,13 @@ class _Home extends State<Home> {
         backgroundColor: const Color(c6),
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: const Color(c2),
+          backgroundColor: const Color(c7),
           brightness: Brightness.dark,
           
           title: const Text(
             'Super Note',
             style: TextStyle(
-              color: Color(c5),
+              color: Color(c1),
             ),
           ),
 
@@ -93,7 +122,7 @@ class _Home extends State<Home> {
                 Icons.filter_alt,
                 color: Color(c1),
               ),
-              onPressed: () => {}
+              onPressed: () => handleSort()
             ),
           ],
         ),
@@ -101,7 +130,7 @@ class _Home extends State<Home> {
         floatingActionButton: FloatingActionButton(
           child: const Icon(
             Icons.add,
-            color: Color(c5),
+            color: Color(c1),
           ),
           tooltip: 'New Notes',
           backgroundColor: const Color(c4),

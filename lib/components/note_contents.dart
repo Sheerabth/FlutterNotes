@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/note_colors.dart';
+import '../theme/note_theme.dart';
 
 
 class NoteTitleEntry extends StatelessWidget {
@@ -22,6 +22,7 @@ class NoteTitleEntry extends StatelessWidget {
         counterText: "",
         hintText: 'Title',
         hintStyle: TextStyle(
+          color: Color(c1),
           fontSize: 21,
           fontWeight: FontWeight.bold,
           height: 1.5,

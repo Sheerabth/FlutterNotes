@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/note_colors.dart';
+import '../theme/note_theme.dart';
 
 
 class ColorPalette extends StatelessWidget {

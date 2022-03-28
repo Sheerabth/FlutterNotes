@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/note.dart';
-import '../theme/note_colors.dart';
+import '../theme/note_theme.dart';
 import '../components/note_contents.dart';
 import '../components/color_picker.dart';
 import '../services/notes.dart';
@@ -19,7 +19,7 @@ class NotesEdit extends StatefulWidget {
 class _NotesEdit extends State<NotesEdit> {
   String noteTitle = '';
   String noteContent = '';
-  String noteColor = 'red';
+  String noteColor = 'purple';
 
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _contentTextController = TextEditingController();
@@ -109,7 +109,7 @@ class _NotesEdit extends State<NotesEdit> {
     super.initState();
     noteTitle = (widget.args[0] == 'new'? '': widget.args[1]['title']);
     noteContent = (widget.args[0] == 'new'? '': widget.args[1]['content']);
-    noteColor = (widget.args[0] == 'new'? 'red': widget.args[1]['noteColor']);
+    noteColor = (widget.args[0] == 'new'? 'purple': widget.args[1]['noteColor']);
 
 
     _titleTextController.text = (widget.args[0] == 'new'? '': widget.args[1]['title']);
@@ -164,20 +164,20 @@ class _NotesEdit extends State<NotesEdit> {
               heroTag: "Save Button",
               child: const Icon(
                 Icons.cancel,
-                color: Color(c5),
+                color: Color(c1),
               ),
               tooltip: 'Save',
-              backgroundColor: const Color(c4),
+              backgroundColor: const Color(c2),
               onPressed: () => Navigator.pop(context)
             ),
             FloatingActionButton(
                 heroTag: "Cancel Button",
                 child: const Icon(
                   Icons.done,
-                  color: Color(c5),
+                  color: Color(c1),
                 ),
-                tooltip: 'Save',
-                backgroundColor: const Color(c4),
+                tooltip: 'Cancel',
+                backgroundColor: const Color(c3),
                 onPressed: () => handleBackButton()
             ),
           ],
