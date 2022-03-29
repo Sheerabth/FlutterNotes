@@ -83,7 +83,7 @@ class _Home extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Super Note',
+      title: 'Flutter Notes',
       home: Scaffold(
         backgroundColor: const Color(c6),
         appBar: AppBar(
@@ -91,7 +91,7 @@ class _Home extends State<Home> {
           backgroundColor: const Color(c7),
           brightness: Brightness.dark,
           title: const Text(
-            'Super Note',
+            'Flutter Notes',
             style: TextStyle(
               color: Color(c1),
             ),
@@ -109,7 +109,7 @@ class _Home extends State<Home> {
                 : Container()),
             IconButton(
                 icon: const Icon(
-                  Icons.filter_alt,
+                  Icons.sort,
                   color: Color(c1),
                 ),
                 onPressed: () => handleSort()),

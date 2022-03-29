@@ -37,6 +37,13 @@ class _SortWidget extends State<SortWidget> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
+            const SizedBox(height: 20),
+            const Text("Sort By",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+              textAlign: TextAlign.left,
+            ),
             ListTile(
               title: const Text('Modified At'),
               leading: Radio<SortBy>(
@@ -60,6 +67,13 @@ class _SortWidget extends State<SortWidget> {
                   });
                 },
               ),
+            ),
+            const SizedBox(height: 20),
+            const Text("Sort Order",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+              textAlign: TextAlign.left,
             ),
             ListTile(
               title: const Text('Ascending'),
@@ -85,8 +99,10 @@ class _SortWidget extends State<SortWidget> {
                 },
               ),
             ),
-            FlatButton(
-                onPressed: () => handleSort(), child: const Text("Confirm"))
+            ElevatedButton(
+                onPressed: () => handleSort(),
+                child: const Text("Confirm")
+            )
           ],
         ),
       ),
