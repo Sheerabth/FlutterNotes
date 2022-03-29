@@ -66,51 +66,6 @@ class _Home extends State<Home> {
   }
 
   void handleSort() {
-    // showDialog(
-    //   context: context,
-    //   builder: (context) => Dialog(
-    //     child: Container(
-    //       padding: const EdgeInsets.all(10),
-    //       child: Column(
-    //         mainAxisSize: MainAxisSize.min,
-    //         children: [
-    //           ListTile(
-    //               title: const Text("Title"),
-    //               onTap: () {
-    //                 setState(() {
-    //                   sortBy = SortBy.title;
-    //                 });
-    //                 Navigator.pop(context);
-    //               }),
-    //           ListTile(
-    //               title: const Text("Date"),
-    //               onTap: () {
-    //                 setState(() {
-    //                   sortBy = SortBy.modifiedAt;
-    //                 });
-    //                 Navigator.pop(context);
-    //               }),
-    //           ListTile(
-    //               title: const Text("Ascending"),
-    //               onTap: () {
-    //                 setState(() {
-    //                   sortOrder = SortOrder.ascending;
-    //                 });
-    //                 Navigator.pop(context);
-    //               }),
-    //           ListTile(
-    //               title: const Text("Descending"),
-    //               onTap: () {
-    //                 setState(() {
-    //                   sortOrder = SortOrder.descending;
-    //                 });
-    //                 Navigator.pop(context);
-    //               }),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
     showDialog(
         context: context,
         builder: (context) => SortWidget(sortBy, sortOrder, handleSortByChange, handleSortOrderChange)
