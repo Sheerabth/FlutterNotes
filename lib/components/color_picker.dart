@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../theme/note_theme.dart';
 
-
 class ColorPalette extends StatelessWidget {
   final BuildContext parentContext;
 
@@ -13,7 +12,7 @@ class ColorPalette extends StatelessWidget {
     return Dialog(
       backgroundColor: const Color(c1),
       clipBehavior: Clip.hardEdge,
-      insetPadding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+      insetPadding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(2),
       ),
@@ -30,7 +29,8 @@ class ColorPalette extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * 0.12,
                 height: MediaQuery.of(context).size.width * 0.12,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.06),
+                  borderRadius: BorderRadius.circular(
+                      MediaQuery.of(context).size.width * 0.06),
                   color: Color(entry.value['b']!),
                 ),
               ),
@@ -40,5 +40,4 @@ class ColorPalette extends StatelessWidget {
       ),
     );
   }
-
 }

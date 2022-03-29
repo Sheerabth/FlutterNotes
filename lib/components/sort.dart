@@ -2,21 +2,22 @@ import 'package:flutter/material.dart';
 
 import '../services/notes.dart';
 
-
 class SortWidget extends StatefulWidget {
   final SortBy sortBy;
   final SortOrder sortOrder;
   final Function handleSortByChange;
   final Function handleSortOrderChange;
 
-  const SortWidget(this.sortBy, this.sortOrder, this.handleSortByChange, this.handleSortOrderChange, {Key? key}) : super(key: key);
+  const SortWidget(this.sortBy, this.sortOrder, this.handleSortByChange,
+      this.handleSortOrderChange,
+      {Key? key})
+      : super(key: key);
 
   @override
   State<SortWidget> createState() => _SortWidget(sortBy, sortOrder);
 }
 
 class _SortWidget extends State<SortWidget> {
-
   SortBy sortBy;
   SortOrder sortOrder;
 
@@ -85,15 +86,10 @@ class _SortWidget extends State<SortWidget> {
               ),
             ),
             FlatButton(
-                onPressed: () => handleSort(),
-                child: const Text("Confirm")
-            )
+                onPressed: () => handleSort(), child: const Text("Confirm"))
           ],
         ),
       ),
     );
   }
 }
-
-
-

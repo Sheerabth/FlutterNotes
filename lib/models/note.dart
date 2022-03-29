@@ -12,7 +12,7 @@ class Note {
     this.title = "Note",
     this.content = "Text",
     this.noteColor = "purple",
-  }): modifiedAt = dateFormat.format(DateTime.now());
+  }) : modifiedAt = dateFormat.format(DateTime.now());
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> data = <String, dynamic>{};
@@ -26,7 +26,8 @@ class Note {
     return data;
   }
 
-  @override toString() {
+  @override
+  toString() {
     return {
       'id': id,
       'title': title,

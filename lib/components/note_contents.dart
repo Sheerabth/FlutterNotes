@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../theme/note_theme.dart';
 
-
 class NoteTitleEntry extends StatelessWidget {
   final TextEditingController textFieldController;
 
-  const NoteTitleEntry({Key? key, required this.textFieldController}) : super(key: key);
+  const NoteTitleEntry({Key? key, required this.textFieldController})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +41,11 @@ class NoteTitleEntry extends StatelessWidget {
   }
 }
 
-
 class NoteEntry extends StatelessWidget {
   final TextEditingController textFieldController;
 
-  const NoteEntry({Key? key, required this.textFieldController}) : super(key: key);
+  const NoteEntry({Key? key, required this.textFieldController})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

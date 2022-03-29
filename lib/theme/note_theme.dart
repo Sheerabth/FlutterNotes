@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
 const noteColors = {
-  'red': {'l': 0xFFFFCDD2,'b': 0xFFE57373},
+  'red': {'l': 0xFFFFCDD2, 'b': 0xFFE57373},
   'pink': {'l': 0xFFF8BBD0, 'b': 0xFFF06292},
   'purple': {'l': 0xFFE1BEE7, 'b': 0xFFBA68C8},
   'deepPurple': {'l': 0xFFD1C4E9, 'b': 0xFF9575CD},
@@ -21,7 +21,14 @@ const noteColors = {
   'blueGray': {'l': 0xFFCFD8DC, 'b': 0xFF90A4AE},
 };
 
-const c1 = 0xFFFDFFFC, c2 = 0xFFFF595E, c3 = 0xFF374B4A, c4 = 0xFF00B1CC, c5 = 0xFFFFD65C, c6 = 0xFFB9CACA,
-    c7 = 0x80374B4A, c8 = 0x3300B1CC, c9 = 0xCCFF595E;
+const c1 = 0xFFFDFFFC,
+    c2 = 0xFFFF595E,
+    c3 = 0xFF374B4A,
+    c4 = 0xFF00B1CC,
+    c5 = 0xFFFFD65C,
+    c6 = 0xFFB9CACA,
+    c7 = 0x80374B4A,
+    c8 = 0x3300B1CC,
+    c9 = 0xCCFF595E;
 
 DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");

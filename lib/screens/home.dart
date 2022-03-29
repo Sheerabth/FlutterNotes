@@ -15,7 +15,6 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
-
   late List<Map<String, dynamic>> notesData;
   List<int> selectedNoteIds = [];
   SortBy sortBy = SortBy.modifiedAt;
@@ -68,8 +67,8 @@ class _Home extends State<Home> {
   void handleSort() {
     showDialog(
         context: context,
-        builder: (context) => SortWidget(sortBy, sortOrder, handleSortByChange, handleSortOrderChange)
-    );
+        builder: (context) => SortWidget(
+            sortBy, sortOrder, handleSortByChange, handleSortOrderChange));
   }
 
   Future<List<Map<String, dynamic>>> handleRead() async {
@@ -91,32 +90,29 @@ class _Home extends State<Home> {
           automaticallyImplyLeading: false,
           backgroundColor: const Color(c7),
           brightness: Brightness.dark,
-          
           title: const Text(
             'Super Note',
             style: TextStyle(
               color: Color(c1),
             ),
           ),
-
           actions: [
-            (selectedNoteIds.isNotEmpty?
-              IconButton(
+            (selectedNoteIds.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Color(c1),
+                    ),
+                    tooltip: 'Delete',
+                    onPressed: () => handleDelete(),
+                  )
+                : Container()),
+            IconButton(
                 icon: const Icon(
-                  Icons.delete,
+                  Icons.filter_alt,
                   color: Color(c1),
                 ),
-                tooltip: 'Delete',
-                onPressed: () => handleDelete(),
-              ): Container()
-            ),
-            IconButton(
-              icon: const Icon(
-                Icons.filter_alt,
-                color: Color(c1),
-              ),
-              onPressed: () => handleSort()
-            ),
+                onPressed: () => handleSort()),
           ],
         ),
         // Floating Button
@@ -130,10 +126,9 @@ class _Home extends State<Home> {
           onPressed: () => {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const NotesEdit(args: ['new', {}])),
-            ).then((dynamic value) => {
-              afterNavigatorPop()
-            })
+              MaterialPageRoute(
+                  builder: (context) => const NotesEdit(args: ['new', {}])),
+            ).then((dynamic value) => {afterNavigatorPop()})
           },
         ),
         body: FutureBuilder(

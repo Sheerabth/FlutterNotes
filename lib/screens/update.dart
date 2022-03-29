@@ -15,7 +15,6 @@ class NotesEdit extends StatefulWidget {
   _NotesEdit createState() => _NotesEdit();
 }
 
-
 class _NotesEdit extends State<NotesEdit> {
   String noteTitle = '';
   String noteContent = '';
@@ -43,12 +42,13 @@ class _NotesEdit extends State<NotesEdit> {
         parentContext: currentContext,
       ),
     ).then((colorName) => {
-      if (colorName != null) {
-        setState(() {
-          noteColor = colorName;
-        })
-      }
-    });
+          if (colorName != null)
+            {
+              setState(() {
+                noteColor = colorName;
+              })
+            }
+        });
   }
 
   handleBackButton() async {
@@ -57,8 +57,7 @@ class _NotesEdit extends State<NotesEdit> {
       if (noteContent.isEmpty) {
         Navigator.pop(context);
         return;
-      }
-      else {
+      } else {
         String title = noteContent.split('\n')[0];
         if (title.length > 31) {
           title = title.substring(0, 31);
@@ -71,11 +70,8 @@ class _NotesEdit extends State<NotesEdit> {
 
     // Save new note
     if (widget.args[0] == 'new') {
-      Note noteObj = Note(
-          title: noteTitle,
-          content: noteContent,
-          noteColor: noteColor
-      );
+      Note noteObj =
+          Note(title: noteTitle, content: noteContent, noteColor: noteColor);
       try {
         await NotesService.insertNote(noteObj);
       } catch (e) {
@@ -88,32 +84,32 @@ class _NotesEdit extends State<NotesEdit> {
     // Update Note
     else if (widget.args[0] == 'update') {
       Note noteObj = Note(
-        id: widget.args[1]['id'],
-        title: noteTitle,
-        content: noteContent,
-        noteColor: noteColor
-      );
+          id: widget.args[1]['id'],
+          title: noteTitle,
+          content: noteContent,
+          noteColor: noteColor);
       try {
         await NotesService.updateNote(noteObj);
       } catch (e) {
         debugPrint('Error inserting row');
-        } finally {
+      } finally {
         Navigator.pop(context);
-        }
+      }
     }
-
   }
 
   @override
   void initState() {
     super.initState();
-    noteTitle = (widget.args[0] == 'new'? '': widget.args[1]['title']);
-    noteContent = (widget.args[0] == 'new'? '': widget.args[1]['content']);
-    noteColor = (widget.args[0] == 'new'? 'purple': widget.args[1]['noteColor']);
+    noteTitle = (widget.args[0] == 'new' ? '' : widget.args[1]['title']);
+    noteContent = (widget.args[0] == 'new' ? '' : widget.args[1]['content']);
+    noteColor =
+        (widget.args[0] == 'new' ? 'purple' : widget.args[1]['noteColor']);
 
-
-    _titleTextController.text = (widget.args[0] == 'new'? '': widget.args[1]['title']);
-    _contentTextController.text = (widget.args[0] == 'new'? '': widget.args[1]['content']);
+    _titleTextController.text =
+        (widget.args[0] == 'new' ? '' : widget.args[1]['title']);
+    _contentTextController.text =
+        (widget.args[0] == 'new' ? '' : widget.args[1]['content']);
     _titleTextController.addListener(handleTitleTextChange);
     _contentTextController.addListener(handleNoteTextChange);
   }
@@ -131,7 +127,6 @@ class _NotesEdit extends State<NotesEdit> {
       backgroundColor: Color(noteColors[noteColor]!['l']!),
       appBar: AppBar(
         backgroundColor: Color(noteColors[noteColor]!['b']!),
-
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
@@ -140,7 +135,6 @@ class _NotesEdit extends State<NotesEdit> {
           tooltip: 'Back',
           onPressed: () => handleBackButton(),
         ),
-
         actions: [
           IconButton(
             icon: const Icon(
@@ -153,7 +147,6 @@ class _NotesEdit extends State<NotesEdit> {
         ],
         title: NoteTitleEntry(textFieldController: _titleTextController),
       ),
-
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Container(
         padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10.0),
@@ -161,15 +154,14 @@ class _NotesEdit extends State<NotesEdit> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             FloatingActionButton(
-              heroTag: "Save Button",
-              child: const Icon(
-                Icons.cancel,
-                color: Color(c1),
-              ),
-              tooltip: 'Save',
-              backgroundColor: const Color(c2),
-              onPressed: () => Navigator.pop(context)
-            ),
+                heroTag: "Save Button",
+                child: const Icon(
+                  Icons.cancel,
+                  color: Color(c1),
+                ),
+                tooltip: 'Save',
+                backgroundColor: const Color(c2),
+                onPressed: () => Navigator.pop(context)),
             FloatingActionButton(
                 heroTag: "Cancel Button",
                 child: const Icon(
@@ -178,8 +170,7 @@ class _NotesEdit extends State<NotesEdit> {
                 ),
                 tooltip: 'Cancel',
                 backgroundColor: const Color(c3),
-                onPressed: () => handleBackButton()
-            ),
+                onPressed: () => handleBackButton()),
           ],
         ),
       ),

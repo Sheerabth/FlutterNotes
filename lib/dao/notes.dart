@@ -10,12 +10,9 @@ class NotesDatabase {
   static const tableName = 'notes';
 
   initDatabase() async {
-    database = await openDatabase(
-      _name,
-      version: _version,
-      onCreate: (Database db, int version) async {
-        await db.execute(
-          '''
+    database = await openDatabase(_name, version: _version,
+        onCreate: (Database db, int version) async {
+      await db.execute('''
             CREATE TABLE $tableName (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
               title TEXT,
@@ -23,25 +20,20 @@ class NotesDatabase {
               noteColor TEXT,
               modifiedAt TEXT
             )
-          '''
-        );
-      }
-    );
+          ''');
+    });
   }
 
   Future<int> insertNote(Note note) async {
-    return await database.insert(tableName,
-        note.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace
-    );
+    return await database.insert(tableName, note.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<int> updateNote(Note note) async {
     return await database.update(tableName, note.toMap(),
-      where: 'id = ?',
-      whereArgs: [note.id],
-      conflictAlgorithm: ConflictAlgorithm.replace
-    );
+        where: 'id = ?',
+        whereArgs: [note.id],
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<List<Map<String, dynamic>>> getAllNotes() async {
@@ -49,10 +41,8 @@ class NotesDatabase {
   }
 
   Future<Map<String, dynamic>?> getNotes(int id) async {
-    var result = await database.query(tableName,
-      where: 'id = ?',
-      whereArgs: [id]
-    );
+    var result =
+        await database.query(tableName, where: 'id = ?', whereArgs: [id]);
 
     if (result.isNotEmpty) {
       return result.first;
@@ -62,10 +52,7 @@ class NotesDatabase {
   }
 
   Future<int> deleteNode(int id) async {
-    return await database.delete(tableName,
-      where: 'id = ?',
-      whereArgs: [id]
-    );
+    return await database.delete(tableName, where: 'id = ?', whereArgs: [id]);
   }
 
   closeDatabase() async {

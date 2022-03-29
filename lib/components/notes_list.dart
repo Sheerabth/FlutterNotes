@@ -10,7 +10,14 @@ class AllNoteLists extends StatelessWidget {
   final dynamic handleNoteListLongPress;
   final dynamic handleNoteListTapAfterSelect;
 
-  const AllNoteLists({Key? key, this.data, required this.selectedNoteIds, this.afterNavigatorPop, this.handleNoteListLongPress, this.handleNoteListTapAfterSelect}) : super(key: key);
+  const AllNoteLists(
+      {Key? key,
+      this.data,
+      required this.selectedNoteIds,
+      this.afterNavigatorPop,
+      this.handleNoteListLongPress,
+      this.handleNoteListTapAfterSelect})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,16 +28,15 @@ class AllNoteLists extends StatelessWidget {
         return DisplayNotes(
             notesData: item,
             selectedNoteIds: selectedNoteIds,
-            selectedNote: (selectedNoteIds.contains(item['id']) == false? false : true),
+            selectedNote:
+                (selectedNoteIds.contains(item['id']) == false ? false : true),
             callAfterNavigatorPop: afterNavigatorPop,
             handleNoteListLongPress: handleNoteListLongPress,
-            handleNoteListTapAfterSelect: handleNoteListTapAfterSelect
-        );
+            handleNoteListTapAfterSelect: handleNoteListTapAfterSelect);
       },
     );
   }
 }
-
 
 class DisplayNotes extends StatelessWidget {
   final dynamic notesData;
@@ -40,7 +46,15 @@ class DisplayNotes extends StatelessWidget {
   final dynamic handleNoteListLongPress;
   final dynamic handleNoteListTapAfterSelect;
 
-  const DisplayNotes({Key? key, this.notesData, required this.selectedNoteIds, required this.selectedNote, this.callAfterNavigatorPop, this.handleNoteListLongPress, this.handleNoteListTapAfterSelect}) : super(key: key);
+  const DisplayNotes(
+      {Key? key,
+      this.notesData,
+      required this.selectedNoteIds,
+      required this.selectedNote,
+      this.callAfterNavigatorPop,
+      this.handleNoteListLongPress,
+      this.handleNoteListTapAfterSelect})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +62,7 @@ class DisplayNotes extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
       child: Material(
         elevation: 1,
-        color: (selectedNote == false? const Color(c1): const Color(c8)),
+        color: (selectedNote == false ? const Color(c1) : const Color(c8)),
         clipBehavior: Clip.hardEdge,
         borderRadius: BorderRadius.circular(5.0),
         child: InkWell(
@@ -58,11 +72,10 @@ class DisplayNotes extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NotesEdit(args: ['update', notesData]),
+                    builder: (context) =>
+                        NotesEdit(args: ['update', notesData]),
                   ),
-                ).then((dynamic value) => {
-                  callAfterNavigatorPop()
-                });
+                ).then((dynamic value) => {callAfterNavigatorPop()});
                 return;
               } else {
                 handleNoteListLongPress(notesData['id']);
@@ -71,7 +84,6 @@ class DisplayNotes extends StatelessWidget {
               handleNoteListTapAfterSelect(notesData['id']);
             }
           },
-
           onLongPress: () {
             handleNoteListLongPress(notesData['id']);
           },
@@ -90,35 +102,31 @@ class DisplayNotes extends StatelessWidget {
                       Container(
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: (selectedNote == false?
-                          Color(noteColors[notesData['noteColor']]!['b']!):
-                          const Color(c9)
-                          ),
+                          color: (selectedNote == false
+                              ? Color(noteColors[notesData['noteColor']]!['b']!)
+                              : const Color(c9)),
                           shape: BoxShape.circle,
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(10),
-                          child: (
-                              selectedNote == false?
-                              Text(
-                                notesData['title'][0],
-                                style: const TextStyle(
+                          child: (selectedNote == false
+                              ? Text(
+                                  notesData['title'][0],
+                                  style: const TextStyle(
+                                    color: Color(c1),
+                                    fontSize: 21,
+                                  ),
+                                )
+                              : const Icon(
+                                  Icons.check,
                                   color: Color(c1),
-                                  fontSize: 21,
-                                ),
-                              ):
-                              const Icon(
-                                Icons.check,
-                                color: Color(c1),
-                                size: 21,
-                              )
-                          ),
+                                  size: 21,
+                                )),
                         ),
                       )
                     ],
                   ),
                 ),
-
                 Expanded(
                   flex: 5,
                   child: Column(
@@ -134,13 +142,13 @@ class DisplayNotes extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-
                       Container(
                         height: 3,
                       ),
-
                       Text(
-                        notesData['content'] != null? notesData['content'].split('\n')[0]: "",
+                        notesData['content'] != null
+                            ? notesData['content'].split('\n')[0]
+                            : "",
                         style: const TextStyle(
                           color: Color(c7),
                           fontSize: 16,
