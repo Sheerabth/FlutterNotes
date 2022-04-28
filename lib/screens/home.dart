@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_notes/services/notes.dart';
@@ -5,6 +6,8 @@ import 'package:flutter_notes/screens/update.dart';
 import 'package:flutter_notes/theme/note_theme.dart';
 import 'package:flutter_notes/components/notes_list.dart';
 import 'package:flutter_notes/components/sort.dart';
+import 'package:flutter_notes/screens/sigin.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 // Home Screen
 class Home extends StatefulWidget {
@@ -19,6 +22,7 @@ class _Home extends State<Home> {
   List<int> selectedNoteIds = [];
   SortBy sortBy = SortBy.modifiedAt;
   SortOrder sortOrder = SortOrder.descending;
+  User currentUser = FirebaseAuth.instance.currentUser!;
 
   void afterNavigatorPop() {
     setState(() {});
@@ -80,6 +84,20 @@ class _Home extends State<Home> {
     }
   }
 
+  void handleSignOut() async {
+    final googleCurrentUser =
+        GoogleSignIn().currentUser ?? await GoogleSignIn().signIn();
+    if (googleCurrentUser != null) {
+      await GoogleSignIn().disconnect();
+    }
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) => const SignIn()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -90,9 +108,9 @@ class _Home extends State<Home> {
           automaticallyImplyLeading: false,
           backgroundColor: const Color(c7),
           brightness: Brightness.dark,
-          title: const Text(
-            'Flutter Notes',
-            style: TextStyle(
+          title: Text(
+            (currentUser.displayName ?? currentUser.email!) + "'s Notes",
+            style: const TextStyle(
               color: Color(c1),
             ),
           ),
@@ -112,24 +130,53 @@ class _Home extends State<Home> {
                   Icons.sort,
                   color: Color(c1),
                 ),
-                onPressed: () => handleSort()),
+                onPressed: () => handleSort()
+            ),
+            Tooltip(
+              message: currentUser.displayName ?? currentUser.email,
+              child: const Icon(
+                Icons.account_circle,
+                color: Color(c1),
+              ),
+            ),
           ],
         ),
         // Floating Button
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(
-            Icons.add,
-            color: Color(c1),
+
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: Container(
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              FloatingActionButton(
+                heroTag: "New Note",
+                child: const Icon(
+                  Icons.add,
+                  color: Color(c1),
+                ),
+                tooltip: 'New Notes',
+                backgroundColor: const Color(c4),
+                onPressed: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const NotesEdit(args: ['new', {}])),
+                  ).then((dynamic value) => {afterNavigatorPop()})
+                },
+              ),
+              FloatingActionButton(
+                heroTag: "Sign In",
+                child: const Icon(
+                  Icons.login,
+                  color: Color(c1),
+                ),
+                tooltip: 'Sign out',
+                backgroundColor: const Color(c4),
+                onPressed: () => { handleSignOut() }
+              ),
+            ],
           ),
-          tooltip: 'New Notes',
-          backgroundColor: const Color(c4),
-          onPressed: () => {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const NotesEdit(args: ['new', {}])),
-            ).then((dynamic value) => {afterNavigatorPop()})
-          },
         ),
         body: FutureBuilder(
           future: handleRead(),
