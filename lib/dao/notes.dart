@@ -1,61 +1,86 @@
-import 'package:sqflite/sqflite.dart';
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_notes/models/access_type.dart';
+import 'package:flutter_notes/models/user_note.dart';
+import 'package:postgres/postgres.dart';
+import 'package:uuid_type/uuid_type.dart';
 
 import '../models/note.dart';
+import 'database.dart';
 
-class NotesDatabase {
-  static const _name = "NotesDatabase.db";
-  static const _version = 1;
+class NotesDAO {
 
-  late Database database;
-  static const tableName = 'notes';
-
-  initDatabase() async {
-    database = await openDatabase(_name, version: _version,
-        onCreate: (Database db, int version) async {
-      await db.execute('''
-            CREATE TABLE $tableName (
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
-              title TEXT,
-              content TEXT,
-              noteColor TEXT,
-              modifiedAt TEXT
-            )
-          ''');
-    });
-  }
-
-  Future<int> insertNote(Note note) async {
-    return await database.insert(tableName, note.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
-  }
-
-  Future<int> updateNote(Note note) async {
-    return await database.update(tableName, note.toMap(),
-        where: 'id = ?',
-        whereArgs: [note.id],
-        conflictAlgorithm: ConflictAlgorithm.replace);
-  }
-
-  Future<List<Map<String, dynamic>>> getAllNotes() async {
-    return await database.query(tableName);
-  }
-
-  Future<Map<String, dynamic>?> getNotes(int id) async {
-    var result =
-        await database.query(tableName, where: 'id = ?', whereArgs: [id]);
-
-    if (result.isNotEmpty) {
-      return result.first;
+  static Future<Uuid> insertNote(Note note) async {
+    PostgreSQLConnection connection = await Database.getConnection();
+    try {
+      await connection.query("INSERT INTO notes(id, title, color, last_modified) VALUES ('${note.id}', '${note.title}', '${note.color}', '${note.lastModified}')");
+      await connection.query("INSERT INTO user_notes(note_id, user_email, access_rights) VALUES ('${note.id}', '${FirebaseAuth.instance.currentUser!.email}', '${AccessType.owner.value}')");
+    } on SocketException catch (_, e) {
+      debugPrint("Socket Exception!!!");
+      debugPrint(e.toString());
+    } on PostgreSQLException catch (_, e) {
+      debugPrint("PostgreSQL Exception!!!");
+      debugPrint(e.toString());
     }
-
-    return null;
+    return note.id;
   }
 
-  Future<int> deleteNode(int id) async {
-    return await database.delete(tableName, where: 'id = ?', whereArgs: [id]);
+  static Future<void> updateNote(Note note) async {
+    PostgreSQLConnection connection = await Database.getConnection();
+    try {
+      await connection.query("UPDATE notes SET title = '${note.title}', color = '${note.color}', last_modified = '${note.lastModified}' WHERE id = '${note.id}'");
+    } on SocketException catch (_, e) {
+      debugPrint("Socket Exception!!!");
+      debugPrint(e.toString());
+    } on PostgreSQLException catch (_, e) {
+      debugPrint("PostgreSQL Exception!!!");
+      debugPrint(e.toString());
+    }
   }
 
-  closeDatabase() async {
-    await database.close();
+  static Future<List<UserNote>> getAllNotes() async {
+    PostgreSQLConnection connection = await Database.getConnection();
+    List<UserNote> result = [];
+    try {
+      var queryResult = await connection.mappedResultsQuery("SELECT id, title, color, last_modified, access_rights FROM notes INNER JOIN user_notes ON id = note_id AND user_email = '${FirebaseAuth.instance.currentUser!.email}'");
+      for (var queryEntry in queryResult) {
+        UserNote userNote = UserNote(
+            id: Uuid.parse(queryEntry['notes']!['id']),
+            title: queryEntry['notes']!['title'],
+            color: queryEntry['notes']!['color'],
+            lastModified: queryEntry['notes']!['last_modified'],
+
+
+            // TODO: Store and retrieve content from firebase cloud storage in service layer
+
+            content: "Default Content",
+            accessRights: AccessType.values.firstWhere((element) {
+              return element.value == queryEntry['user_notes']!['access_rights'];
+            }));
+        result.add(userNote);
+      }
+    } on SocketException catch (_, e) {
+      debugPrint("Socket Exception!!!");
+      debugPrint(e.toString());
+    } on PostgreSQLException catch (_, e) {
+      debugPrint("PostgreSQL Exception!!!");
+      debugPrint(e.toString());
+    }
+    return result;
+  }
+
+  static Future<void> deleteNote(Uuid id) async {
+    PostgreSQLConnection connection = await Database.getConnection();
+    try {
+      await connection.query("DELETE FROM notes WHERE id = '$id'");
+    } on SocketException catch (_, e) {
+      debugPrint("Socket Exception!!!");
+      debugPrint(e.toString());
+    } on PostgreSQLException catch (_, e) {
+      debugPrint("PostgreSQL Exception!!!");
+      debugPrint(e.toString());
+    }
   }
 }

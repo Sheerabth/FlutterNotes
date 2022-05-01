@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_notes/screens/sigin.dart';
 import './screens/home.dart';
+import 'config.dart';
+import 'package:flutter_notes/dao/database.dart';
 
 void main() async {
+  await Config.configure();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: const FirebaseOptions(
-      apiKey: 'AIzaSyAAX5TXvcMsk6krGXhoVMNXP8q2v0xfM40',
-      appId: '1:58792502861:android:779f8594a02f674b505e04',
-      messagingSenderId: '58792502861',
-      projectId: 'flutternotes-cd107',
-      storageBucket: 'flutternotes-cd107.appspot.com',
+    options: FirebaseOptions(
+      apiKey: Config.apiKey!,
+      appId: Config.appId!,
+      messagingSenderId: Config.messagingSenderId!,
+      projectId: Config.projectId!,
+      storageBucket: Config.storageBucket!,
     )
   );
   runApp(const MyApp());
@@ -21,12 +24,20 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  Future<bool> handleAppClose() async {
+    await Database.closeConnection();
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     User? currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
-      return const MaterialApp(
-        home: Home(),
+      return WillPopScope(
+          child: const MaterialApp(
+            home: Home(),
+          ),
+          onWillPop: handleAppClose
       );
     }
     return const MaterialApp(

@@ -8,6 +8,9 @@ import 'package:flutter_notes/components/notes_list.dart';
 import 'package:flutter_notes/components/sort.dart';
 import 'package:flutter_notes/screens/sigin.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:uuid_type/uuid_type.dart';
+
+import '../models/user_note.dart';
 
 // Home Screen
 class Home extends StatefulWidget {
@@ -18,8 +21,8 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
-  late List<Map<String, dynamic>> notesData;
-  List<int> selectedNoteIds = [];
+  late List<UserNote> notesData;
+  List<Uuid> selectedNoteIds = [];
   SortBy sortBy = SortBy.modifiedAt;
   SortOrder sortOrder = SortOrder.descending;
   User currentUser = FirebaseAuth.instance.currentUser!;
@@ -28,7 +31,7 @@ class _Home extends State<Home> {
     setState(() {});
   }
 
-  void handleNoteListLongPress(int id) {
+  void handleNoteListLongPress(Uuid id) {
     setState(() {
       if (selectedNoteIds.contains(id) == false) {
         selectedNoteIds.add(id);
@@ -36,7 +39,7 @@ class _Home extends State<Home> {
     });
   }
 
-  void handleNoteListTapAfterSelect(int id) {
+  void handleNoteListTapAfterSelect(Uuid id) {
     setState(() {
       if (selectedNoteIds.contains(id) == true) {
         selectedNoteIds.remove(id);
@@ -45,15 +48,11 @@ class _Home extends State<Home> {
   }
 
   void handleDelete() async {
-    try {
-      await NotesService.deleteNote(selectedNoteIds);
-    } catch (e) {
-      debugPrint('Db error');
-    } finally {
-      setState(() {
-        selectedNoteIds = [];
-      });
-    }
+    print(selectedNoteIds);
+    await NotesService.deleteNote(selectedNoteIds);
+    setState(() {
+      selectedNoteIds = [];
+    });
   }
 
   void handleSortByChange(SortBy updatedSortBy) {
@@ -75,13 +74,8 @@ class _Home extends State<Home> {
             sortBy, sortOrder, handleSortByChange, handleSortOrderChange));
   }
 
-  Future<List<Map<String, dynamic>>> handleRead() async {
-    try {
-      return NotesService.getNotes(sortBy, sortOrder);
-    } catch (e) {
-      debugPrint('Error retrieving notes');
-      return [{}];
-    }
+  Future<List<UserNote>> handleRead() async {
+    return await NotesService.getNotes(sortBy, sortOrder);
   }
 
   void handleSignOut() async {
@@ -107,7 +101,6 @@ class _Home extends State<Home> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: const Color(c7),
-          brightness: Brightness.dark,
           title: Text(
             (currentUser.displayName ?? currentUser.email!) + "'s Notes",
             style: const TextStyle(
@@ -166,9 +159,8 @@ class _Home extends State<Home> {
                 },
               ),
               FloatingActionButton(
-                heroTag: "Sign In",
                 child: const Icon(
-                  Icons.login,
+                  Icons.logout,
                   color: Color(c1),
                 ),
                 tooltip: 'Sign out',
@@ -194,10 +186,12 @@ class _Home extends State<Home> {
                   ),
                 ],
               );
-            } else if (snapshot.hasError) {
-              debugPrint('Error reading database');
-              return const Text('Error');
-            } else {
+            }
+            // } else if (snapshot.hasError) {
+            //   debugPrint('Error reading database');
+            //   return const Text('Error');
+            // } else {
+              else {
               return const Center(
                 child: CircularProgressIndicator(
                   backgroundColor: Color(c3),

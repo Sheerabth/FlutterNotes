@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uuid_type/uuid_type.dart';
 
 import '../models/note.dart';
 import '../theme/note_theme.dart';
@@ -70,46 +71,37 @@ class _NotesEdit extends State<NotesEdit> {
 
     // Save new note
     if (widget.args[0] == 'new') {
-      Note noteObj =
-          Note(title: noteTitle, content: noteContent, noteColor: noteColor);
-      try {
-        await NotesService.insertNote(noteObj);
-      } catch (e) {
-        debugPrint('Error inserting row');
-      } finally {
-        Navigator.pop(context);
-      }
+      Note noteObj = Note(id: Uuid.parse(uuid.v4()), title: noteTitle, color: noteColor, lastModified: dateFormat.format(DateTime.now()),content: noteContent);
+      await NotesService.insertNote(noteObj);
+      Navigator.pop(context);
     }
 
     // Update Note
     else if (widget.args[0] == 'update') {
       Note noteObj = Note(
-          id: widget.args[1]['id'],
+          id: widget.args[1].id,
           title: noteTitle,
-          content: noteContent,
-          noteColor: noteColor);
-      try {
-        await NotesService.updateNote(noteObj);
-      } catch (e) {
-        debugPrint('Error inserting row');
-      } finally {
-        Navigator.pop(context);
-      }
+          color: noteColor,
+          lastModified: dateFormat.format(DateTime.now()),
+          content: noteContent
+      );
+      await NotesService.updateNote(noteObj);
+      Navigator.pop(context);
     }
   }
 
   @override
   void initState() {
     super.initState();
-    noteTitle = (widget.args[0] == 'new' ? '' : widget.args[1]['title']);
-    noteContent = (widget.args[0] == 'new' ? '' : widget.args[1]['content']);
+    noteTitle = (widget.args[0] == 'new' ? '' : widget.args[1].title);
+    noteContent = (widget.args[0] == 'new' ? '' : widget.args[1].content);
     noteColor =
-        (widget.args[0] == 'new' ? 'purple' : widget.args[1]['noteColor']);
+        (widget.args[0] == 'new' ? 'purple' : widget.args[1].color);
 
     _titleTextController.text =
-        (widget.args[0] == 'new' ? '' : widget.args[1]['title']);
+        (widget.args[0] == 'new' ? '' : widget.args[1].title);
     _contentTextController.text =
-        (widget.args[0] == 'new' ? '' : widget.args[1]['content']);
+        (widget.args[0] == 'new' ? '' : widget.args[1].content);
     _titleTextController.addListener(handleTitleTextChange);
     _contentTextController.addListener(handleNoteTextChange);
   }
