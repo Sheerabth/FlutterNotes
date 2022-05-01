@@ -1,28 +1,29 @@
-import 'package:flutter_notes/theme/note_theme.dart';
+import 'package:uuid_type/uuid_type.dart';
 
 class Note {
-  int? id;
+  Uuid id;
   String title;
-  String content;
-  String noteColor;
-  String modifiedAt;
+  String color;
+  String lastModified;
+  String? content;
 
   Note({
-    this.id,
-    this.title = "Note",
-    this.content = "Text",
-    this.noteColor = "purple",
-  }) : modifiedAt = dateFormat.format(DateTime.now());
+    required this.id,
+    required this.title,
+    required this.color,
+    required this.lastModified,
+    this.content,
+  });
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> data = <String, dynamic>{};
-    if (id == -1) {
-      data['id'] = id;
+    data['id'] = id;
+    if (content != null) {
+      data['content'] = content;
     }
     data['title'] = title;
-    data['content'] = content;
-    data['noteColor'] = noteColor;
-    data['modifiedAt'] = modifiedAt;
+    data['color'] = color;
+    data['lastModified'] = lastModified;
     return data;
   }
 
@@ -31,9 +32,9 @@ class Note {
     return {
       'id': id,
       'title': title,
-      'content': content,
-      'noteColor': noteColor,
-      'modifiedAt': modifiedAt
+      'color': color,
+      'lastModified': lastModified,
+      'content': content
     }.toString();
   }
 }
