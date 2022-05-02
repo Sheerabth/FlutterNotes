@@ -5,6 +5,8 @@ import '../models/note.dart';
 
 import '../models/user_note.dart';
 
+import '../dao/cloud_storage.dart';
+
 enum SortBy {
   modifiedAt,
   title,
@@ -19,6 +21,10 @@ class NotesService {
   static Future<List<UserNote>> getNotes(
       SortBy sortBy, SortOrder sortOrder) async {
     List<UserNote> userNotes = await NotesDAO.getAllNotes();
+
+    for (UserNote userNote in userNotes) {
+      userNote.content = await CloudStorage.getNote(userNote.id);
+    }
 
     // TODO: Add support for sorting
 
@@ -41,10 +47,14 @@ class NotesService {
 
   static Future<void> insertNote(Note note) async {
     await NotesDAO.insertNote(note);
+    print("Note inserted");
+    await CloudStorage.insertNote(note);
   }
 
   static Future<void> updateNote(Note note) async {
     await NotesDAO.updateNote(note);
+    print("Note updated");
+    await CloudStorage.insertNote(note);
   }
 
   static Future<void> deleteNote(List<Uuid> selectedNoteIds) async {

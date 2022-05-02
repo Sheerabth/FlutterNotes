@@ -43,6 +43,7 @@ dependencies:
   firebase_storage: ^10.2.14
   uuid_type: ^2.0.0
   mutex: ^3.0.0
+  path_provider: ^2.0.9
 
 dev_dependencies:
   flutter_test:
