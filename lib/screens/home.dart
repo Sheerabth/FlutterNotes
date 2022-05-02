@@ -187,10 +187,6 @@ class _Home extends State<Home> {
                 ],
               );
             }
-            // } else if (snapshot.hasError) {
-            //   debugPrint('Error reading database');
-            //   return const Text('Error');
-            // } else {
               else {
               return const Center(
                 child: CircularProgressIndicator(
