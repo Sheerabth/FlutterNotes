@@ -33,4 +33,9 @@ class CloudStorage {
     // await tempFile.delete();
     return noteContents;
   }
+
+  static Future<void> deleteNote(Uuid id) async {
+    var fileRef = storageRef.child(id.toString());
+    await fileRef.delete();
+  }
 }

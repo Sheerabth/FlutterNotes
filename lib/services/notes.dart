@@ -22,10 +22,6 @@ class NotesService {
       SortBy sortBy, SortOrder sortOrder) async {
     List<UserNote> userNotes = await NotesDAO.getAllNotes();
 
-    for (UserNote userNote in userNotes) {
-      userNote.content = await CloudStorage.getNote(userNote.id);
-    }
-
     // TODO: Add support for sorting
 
     // if (sortBy == SortBy.modifiedAt) {
@@ -60,6 +56,8 @@ class NotesService {
   static Future<void> deleteNote(List<Uuid> selectedNoteIds) async {
     for (Uuid id in selectedNoteIds) {
       await NotesDAO.deleteNote(id);
+      print("Note deleted");
+      await CloudStorage.deleteNote(id);
     }
   }
 }

@@ -6,6 +6,8 @@ import 'package:uuid_type/uuid_type.dart';
 
 import '../models/user_note.dart';
 
+import '../dao/cloud_storage.dart';
+
 class AllNoteLists extends StatelessWidget {
   final List<UserNote> data;
   final List<Uuid> selectedNoteIds;
@@ -28,8 +30,8 @@ class AllNoteLists extends StatelessWidget {
       itemCount: data.length,
       itemBuilder: (BuildContext context, int index) {
         UserNote item = data[index];
-        return DisplayNotes(
-            notesData: item,
+        return DisplayNote(
+            noteData: item,
             selectedNoteIds: selectedNoteIds,
             selectedNote:
                 (selectedNoteIds.contains(item.id) == false ? false : true),
@@ -41,17 +43,17 @@ class AllNoteLists extends StatelessWidget {
   }
 }
 
-class DisplayNotes extends StatelessWidget {
-  final UserNote notesData;
+class DisplayNote extends StatelessWidget {
+  final UserNote noteData;
   final List<Uuid> selectedNoteIds;
   final bool selectedNote;
   final dynamic callAfterNavigatorPop;
   final dynamic handleNoteListLongPress;
   final dynamic handleNoteListTapAfterSelect;
 
-  const DisplayNotes(
+  const DisplayNote(
       {Key? key,
-      required this.notesData,
+      required this.noteData,
       required this.selectedNoteIds,
       required this.selectedNote,
       this.callAfterNavigatorPop,
@@ -69,26 +71,26 @@ class DisplayNotes extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         borderRadius: BorderRadius.circular(5.0),
         child: InkWell(
-          onTap: () {
+          onTap: () async {
             if (selectedNote == false) {
               if (selectedNoteIds.isEmpty) {
+                noteData.content = await CloudStorage.getNote(noteData.id);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        NotesEdit(args: ['update', notesData]),
+                    builder: (context) => NotesEdit(args: ['update', noteData]),
                   ),
                 ).then((dynamic value) => {callAfterNavigatorPop()});
                 return;
               } else {
-                handleNoteListLongPress(notesData.id);
+                handleNoteListLongPress(noteData.id);
               }
             } else {
-              handleNoteListTapAfterSelect(notesData.id);
+              handleNoteListTapAfterSelect(noteData.id);
             }
           },
           onLongPress: () {
-            handleNoteListLongPress(notesData.id);
+            handleNoteListLongPress(noteData.id);
           },
           child: Container(
             width: MediaQuery.of(context).size.width,
@@ -106,7 +108,7 @@ class DisplayNotes extends StatelessWidget {
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           color: (selectedNote == false
-                              ? Color(noteColors[notesData.color]!['b']!)
+                              ? Color(noteColors[noteData.color]!['b']!)
                               : const Color(c9)),
                           shape: BoxShape.circle,
                         ),
@@ -114,7 +116,7 @@ class DisplayNotes extends StatelessWidget {
                           padding: const EdgeInsets.all(10),
                           child: (selectedNote == false
                               ? Text(
-                                  notesData.title[0],
+                                  noteData.title[0],
                                   style: const TextStyle(
                                     color: Color(c1),
                                     fontSize: 21,
@@ -138,7 +140,7 @@ class DisplayNotes extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Text(
-                        notesData.title,
+                        noteData.title,
                         style: const TextStyle(
                           color: Color(c3),
                           fontSize: 18,
@@ -149,8 +151,8 @@ class DisplayNotes extends StatelessWidget {
                         height: 3,
                       ),
                       Text(
-                        notesData.content != null
-                            ? notesData.content!.split('\n')[0]
+                        noteData.content != null
+                            ? noteData.content!.split('\n')[0]
                             : "",
                         style: const TextStyle(
                           color: Color(c7),
