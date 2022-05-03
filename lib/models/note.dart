@@ -6,6 +6,7 @@ class Note {
   String color;
   String lastModified;
   String? content;
+  String? preview;
 
   Note({
     required this.id,
@@ -13,7 +14,19 @@ class Note {
     required this.color,
     required this.lastModified,
     this.content,
-  });
+    this.preview,
+  }) {
+    if (preview == null) {
+      if (content != null) {
+        String contentFirstLine = content!.split('\n')[0];
+        if (contentFirstLine.length < 29) {
+          preview = contentFirstLine;
+        } else {
+          preview = contentFirstLine.substring(0, 29) + '...';
+        }
+      }
+    }
+  }
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> data = <String, dynamic>{};

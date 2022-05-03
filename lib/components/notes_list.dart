@@ -151,9 +151,7 @@ class DisplayNote extends StatelessWidget {
                         height: 3,
                       ),
                       Text(
-                        noteData.content != null
-                            ? noteData.content!.split('\n')[0]
-                            : "",
+                        noteData.preview ?? "",
                         style: const TextStyle(
                           color: Color(c7),
                           fontSize: 16,

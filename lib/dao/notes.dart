@@ -11,12 +11,26 @@ import '../models/note.dart';
 import 'database.dart';
 
 class NotesDAO {
-
   static Future<Uuid> insertNote(Note note) async {
     PostgreSQLConnection connection = await Database.getConnection();
     try {
-      await connection.query("INSERT INTO notes(id, title, color, last_modified) VALUES ('${note.id}', '${note.title}', '${note.color}', '${note.lastModified}')");
-      await connection.query("INSERT INTO user_notes(note_id, user_email, access_rights) VALUES ('${note.id}', '${FirebaseAuth.instance.currentUser!.email}', '${AccessType.owner.value}')");
+      await connection.query(
+          "INSERT INTO notes(id, title, preview, color, last_modified) VALUES (@noteId:uuid, @noteTitle, @notePreview, @noteColor, @noteLastModified)",
+          substitutionValues: {
+            "noteId": note.id.toString(),
+            "noteTitle": note.title,
+            "notePreview": note.preview,
+            "noteColor": note.color,
+            "noteLastModified": note.lastModified
+          });
+
+      await connection.query(
+          "INSERT INTO user_notes(note_id, user_email, access_rights) VALUES (@noteId:uuid, @userEmail, @accessRights)",
+          substitutionValues: {
+            "noteId": note.id.toString(),
+            "userEmail": FirebaseAuth.instance.currentUser!.email,
+            "accessRights": AccessType.owner.value
+          });
     } on SocketException catch (_, e) {
       debugPrint("Socket Exception!!!");
       debugPrint(e.toString());
@@ -30,7 +44,15 @@ class NotesDAO {
   static Future<void> updateNote(Note note) async {
     PostgreSQLConnection connection = await Database.getConnection();
     try {
-      await connection.query("UPDATE notes SET title = '${note.title}', color = '${note.color}', last_modified = '${note.lastModified}' WHERE id = '${note.id}'");
+      await connection.query(
+          "UPDATE notes SET title = @noteTitle, preview = @notePreview, color = @noteColor, last_modified = @noteLastModified WHERE id = @noteId:uuid",
+          substitutionValues: {
+            "noteTitle": note.title,
+            "notePreview": note.preview,
+            "noteColor": note.color,
+            "noteLastModified": note.lastModified,
+            "noteId": note.id.toString(),
+          });
     } on SocketException catch (_, e) {
       debugPrint("Socket Exception!!!");
       debugPrint(e.toString());
@@ -44,20 +66,25 @@ class NotesDAO {
     PostgreSQLConnection connection = await Database.getConnection();
     List<UserNote> result = [];
     try {
-      var queryResult = await connection.mappedResultsQuery("SELECT id, title, color, last_modified, access_rights FROM notes INNER JOIN user_notes ON id = note_id AND user_email = '${FirebaseAuth.instance.currentUser!.email}'");
+      var queryResult = await connection.mappedResultsQuery(
+          "SELECT id, title, preview, color, last_modified, access_rights FROM notes INNER JOIN user_notes ON id = note_id AND user_email = @userEmail",
+          substitutionValues: {
+            "userEmail": FirebaseAuth.instance.currentUser!.email,
+          });
       for (var queryEntry in queryResult) {
+        // print(queryEntry);
         UserNote userNote = UserNote(
             id: Uuid.parse(queryEntry['notes']!['id']),
             title: queryEntry['notes']!['title'],
+            preview: queryEntry['notes']!['preview'],
             color: queryEntry['notes']!['color'],
             lastModified: queryEntry['notes']!['last_modified'],
 
-
             // TODO: Store and retrieve content from firebase cloud storage in service layer
 
-            content: "Default Content",
             accessRights: AccessType.values.firstWhere((element) {
-              return element.value == queryEntry['user_notes']!['access_rights'];
+              return element.value ==
+                  queryEntry['user_notes']!['access_rights'];
             }));
         result.add(userNote);
       }
@@ -74,7 +101,8 @@ class NotesDAO {
   static Future<void> deleteNote(Uuid id) async {
     PostgreSQLConnection connection = await Database.getConnection();
     try {
-      await connection.query("DELETE FROM notes WHERE id = '$id'");
+      await connection.query("DELETE FROM notes WHERE id = @noteId:uuid",
+          substitutionValues: {"noteId": id.toString()});
     } on SocketException catch (_, e) {
       debugPrint("Socket Exception!!!");
       debugPrint(e.toString());

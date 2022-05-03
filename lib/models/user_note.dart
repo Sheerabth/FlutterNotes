@@ -12,8 +12,15 @@ class UserNote extends Note {
     required String color,
     required String lastModified,
     required this.accessRights,
-    String? content
-  }) : super(id: id, title: title, color: color, lastModified: lastModified, content: content);
+    String? content,
+    String? preview,
+  }) : super(
+            id: id,
+            title: title,
+            preview: preview,
+            color: color,
+            lastModified: lastModified,
+            content: content);
 
   @override
   Map<String, dynamic> toMap() {

@@ -7,12 +7,15 @@ import 'package:flutter_notes/config.dart';
 
 class Database {
   static PostgreSQLConnection connection = PostgreSQLConnection(
-  Config.postgresHost!, Config.postgresPort!, Config.postgresDbname!,
-  username: Config.postgresUsername!, password: Config.postgresPassword!);
+      Config.postgresHost!, Config.postgresPort!, Config.postgresDbname!,
+      username: Config.postgresUsername!,
+      password: Config.postgresPassword!,
+      useSSL: Config.postgresUseSSL!);
 
   static final Mutex lock = Mutex();
 
   static Future<PostgreSQLConnection> getConnection() async {
+    print(Config.postgresHost);
     lock.acquire();
     if (connection.isClosed) {
       try {

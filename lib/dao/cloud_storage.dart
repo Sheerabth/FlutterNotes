@@ -10,7 +10,9 @@ class CloudStorage {
 
   static Future<File> getTemporaryFile(String fileName) async {
     final directory = await getApplicationDocumentsDirectory();
-    return File('${directory.path}/$fileName');
+    var file = File('${directory.path}/$fileName');
+    await file.create();
+    return file;
   }
 
   static Future<void> insertNote(Note note) async {
@@ -18,7 +20,7 @@ class CloudStorage {
     if (note.content == null) {
       return;
     }
-    tempFile.writeAsString(note.content!);
+    tempFile = await tempFile.writeAsString(note.content!, flush: true);
     // TODO: if possible, show progress indicators
     var fileRef = storageRef.child(note.id.toString());
     await fileRef.putFile(tempFile);
