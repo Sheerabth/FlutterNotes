@@ -6,6 +6,7 @@ import '../theme/note_theme.dart';
 import '../components/note_contents.dart';
 import '../components/color_picker.dart';
 import '../services/notes.dart';
+import './share.dart';
 
 class NotesEdit extends StatefulWidget {
   final List<dynamic> args;
@@ -90,6 +91,14 @@ class _NotesEdit extends State<NotesEdit> {
     }
   }
 
+  // Share note
+  handleShare() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ShareNote(noteColor: noteColor, note: widget.args[1])),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -128,6 +137,14 @@ class _NotesEdit extends State<NotesEdit> {
           onPressed: () => handleBackButton(),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.share,
+              color: Color(c1),
+            ),
+            tooltip: 'Share',
+            onPressed: () => handleShare(),
+          ),
           IconButton(
             icon: const Icon(
               Icons.color_lens,

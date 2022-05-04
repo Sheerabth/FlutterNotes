@@ -87,8 +87,7 @@ class _Home extends State<Home> {
     await FirebaseAuth.instance.signOut();
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-          builder: (context) => const SignIn()),
+      MaterialPageRoute(builder: (context) => const SignIn()),
     );
   }
 
@@ -123,8 +122,7 @@ class _Home extends State<Home> {
                   Icons.sort,
                   color: Color(c1),
                 ),
-                onPressed: () => handleSort()
-            ),
+                onPressed: () => handleSort()),
             Tooltip(
               message: currentUser.displayName ?? currentUser.email,
               child: const Icon(
@@ -154,19 +152,19 @@ class _Home extends State<Home> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const NotesEdit(args: ['new', {}])),
+                        builder: (context) =>
+                            const NotesEdit(args: ['new', {}])),
                   ).then((dynamic value) => {afterNavigatorPop()})
                 },
               ),
               FloatingActionButton(
-                child: const Icon(
-                  Icons.logout,
-                  color: Color(c1),
-                ),
-                tooltip: 'Sign out',
-                backgroundColor: const Color(c4),
-                onPressed: () => { handleSignOut() }
-              ),
+                  child: const Icon(
+                    Icons.logout,
+                    color: Color(c1),
+                  ),
+                  tooltip: 'Sign out',
+                  backgroundColor: const Color(c4),
+                  onPressed: () => {handleSignOut()}),
             ],
           ),
         ),
@@ -175,19 +173,26 @@ class _Home extends State<Home> {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
               notesData = snapshot.data;
-              return Stack(
-                children: <Widget>[
-                  AllNoteLists(
-                    data: snapshot.data,
-                    selectedNoteIds: selectedNoteIds,
-                    afterNavigatorPop: afterNavigatorPop,
-                    handleNoteListLongPress: handleNoteListLongPress,
-                    handleNoteListTapAfterSelect: handleNoteListTapAfterSelect,
-                  ),
-                ],
+              return RefreshIndicator(
+                child: Stack(
+                  children: <Widget>[
+                    AllNoteLists(
+                      data: snapshot.data,
+                      selectedNoteIds: selectedNoteIds,
+                      afterNavigatorPop: afterNavigatorPop,
+                      handleNoteListLongPress: handleNoteListLongPress,
+                      handleNoteListTapAfterSelect:
+                          handleNoteListTapAfterSelect,
+                    ),
+                  ],
+                ),
+                onRefresh: () async {
+                  setState(
+                    () {},
+                  );
+                },
               );
-            }
-              else {
+            } else {
               return const Center(
                 child: CircularProgressIndicator(
                   backgroundColor: Color(c3),

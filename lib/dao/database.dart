@@ -16,6 +16,7 @@ class Database {
 
   static Future<PostgreSQLConnection> getConnection() async {
     print(Config.postgresHost);
+    print(Config.postgresUseSSL);
     lock.acquire();
     if (connection.isClosed) {
       try {

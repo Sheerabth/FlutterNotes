@@ -111,4 +111,64 @@ class NotesDAO {
       debugPrint(e.toString());
     }
   }
+
+  static Future<void> shareNote(Uuid id, String email) async {
+    PostgreSQLConnection connection = await Database.getConnection();
+    try {
+      await connection.query(
+          "INSERT INTO user_notes (note_id, user_email, access_rights) VALUES (@noteId:uuid, @userEmail, @accessRights)",
+          substitutionValues: {
+            "noteId": id.toString(),
+            "userEmail": email,
+            "accessRights": "editor",
+          });
+    } on SocketException catch (_, e) {
+      debugPrint("Socket Exception!!!");
+      debugPrint(e.toString());
+    } on PostgreSQLException catch (_, e) {
+      debugPrint("PostgreSQL Exception!!!");
+      debugPrint(e.toString());
+    }
+  }
+
+  static Future<List<String>> getSharedEmails(Uuid id) async {
+    PostgreSQLConnection connection = await Database.getConnection();
+    List<String> result = [];
+    try {
+      var queryResult = await connection.mappedResultsQuery(
+          "SELECT user_email FROM user_notes WHERE note_id=@noteId:uuid",
+          substitutionValues: {
+            "noteId": id.toString(),
+          });
+      for (var queryEntry in queryResult) {
+        print(queryEntry);
+        result.add(queryEntry['user_notes']!['user_email']);
+      }
+    } on SocketException catch (_, e) {
+      debugPrint("Socket Exception!!!");
+      debugPrint(e.toString());
+    } on PostgreSQLException catch (_, e) {
+      debugPrint("PostgreSQL Exception!!!");
+      debugPrint(e.toString());
+    }
+    return result;
+  }
+
+  static Future<void> revokeNoteAccess(Uuid id, String email) async {
+    PostgreSQLConnection connection = await Database.getConnection();
+    try {
+      await connection.query(
+          "DELETE from user_notes WHERE user_email = @userEmail AND note_id = @noteId:uuid;",
+          substitutionValues: {
+            "noteId": id.toString(),
+            "userEmail": email,
+          });
+    } on SocketException catch (_, e) {
+      debugPrint("Socket Exception!!!");
+      debugPrint(e.toString());
+    } on PostgreSQLException catch (_, e) {
+      debugPrint("PostgreSQL Exception!!!");
+      debugPrint(e.toString());
+    }
+  }
 }
