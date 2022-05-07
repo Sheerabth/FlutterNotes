@@ -43,20 +43,17 @@ class NotesService {
 
   static Future<void> insertNote(Note note) async {
     await NotesDAO.insertNote(note);
-    print("Note inserted");
     await CloudStorage.insertNote(note);
   }
 
   static Future<void> updateNote(Note note) async {
     await NotesDAO.updateNote(note);
-    print("Note updated");
     await CloudStorage.insertNote(note);
   }
 
   static Future<void> deleteNote(List<Uuid> selectedNoteIds) async {
     for (Uuid id in selectedNoteIds) {
       await NotesDAO.deleteNote(id);
-      print("Note deleted");
       await CloudStorage.deleteNote(id);
     }
   }

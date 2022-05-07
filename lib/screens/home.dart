@@ -48,7 +48,6 @@ class _Home extends State<Home> {
   }
 
   void handleDelete() async {
-    print(selectedNoteIds);
     await NotesService.deleteNote(selectedNoteIds);
     setState(() {
       selectedNoteIds = [];
@@ -153,7 +152,7 @@ class _Home extends State<Home> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            const NotesEdit(args: ['new', {}])),
+                            const NotesEdit()),
                   ).then((dynamic value) => {afterNavigatorPop()})
                 },
               ),

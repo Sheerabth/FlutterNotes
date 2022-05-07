@@ -72,7 +72,6 @@ class NotesDAO {
             "userEmail": FirebaseAuth.instance.currentUser!.email,
           });
       for (var queryEntry in queryResult) {
-        // print(queryEntry);
         UserNote userNote = UserNote(
             id: Uuid.parse(queryEntry['notes']!['id']),
             title: queryEntry['notes']!['title'],
@@ -141,7 +140,6 @@ class NotesDAO {
             "noteId": id.toString(),
           });
       for (var queryEntry in queryResult) {
-        print(queryEntry);
         result.add(queryEntry['user_notes']!['user_email']);
       }
     } on SocketException catch (_, e) {
