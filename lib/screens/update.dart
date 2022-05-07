@@ -9,18 +9,23 @@ import '../services/notes.dart';
 import './share.dart';
 
 class NotesEdit extends StatefulWidget {
-  final List<dynamic> args;
 
-  const NotesEdit({Key? key, required this.args}) : super(key: key);
+  final Note? noteData;
+
+  const NotesEdit({Key? key, this.noteData}) : super(key: key);
 
   @override
-  _NotesEdit createState() => _NotesEdit();
+  _NotesEdit createState() => _NotesEdit(noteData: noteData);
 }
 
 class _NotesEdit extends State<NotesEdit> {
   String noteTitle = '';
   String noteContent = '';
   String noteColor = 'purple';
+  bool showShare = false;
+  Note? noteData;
+
+  _NotesEdit({this.noteData});
 
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _contentTextController = TextEditingController();
@@ -53,11 +58,13 @@ class _NotesEdit extends State<NotesEdit> {
         });
   }
 
-  handleBackButton() async {
+  handleSave() async {
     if (noteTitle.isEmpty) {
       // Go back without saving
       if (noteContent.isEmpty) {
-        Navigator.pop(context);
+        setState(() {
+          showShare = false;
+        });
         return;
       } else {
         String title = noteContent.split('\n')[0];
@@ -71,48 +78,62 @@ class _NotesEdit extends State<NotesEdit> {
     }
 
     // Save new note
-    if (widget.args[0] == 'new') {
+    if (noteData == null) {
       Note noteObj = Note(id: Uuid.parse(uuid.v4()), title: noteTitle, color: noteColor, lastModified: dateFormat.format(DateTime.now()),content: noteContent);
       await NotesService.insertNote(noteObj);
-      Navigator.pop(context);
+      noteData = noteObj;
     }
 
     // Update Note
-    else if (widget.args[0] == 'update') {
+    else if (noteData != null) {
       Note noteObj = Note(
-          id: widget.args[1].id,
+          id: noteData!.id,
           title: noteTitle,
           color: noteColor,
           lastModified: dateFormat.format(DateTime.now()),
           content: noteContent
       );
       await NotesService.updateNote(noteObj);
-      Navigator.pop(context);
+      noteData = noteObj;
     }
+
+    setState(() {
+      showShare = true;
+    });
+  }
+
+  handleBackButton() async {
+    await handleSave();
+    if (noteTitle == '' && noteData != null) {
+      await NotesService.deleteNote([noteData!.id]);
+    }
+    Navigator.pop(context);
   }
 
   // Share note
   handleShare() async {
+    await handleSave();
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ShareNote(noteColor: noteColor, note: widget.args[1])),
+      MaterialPageRoute(builder: (context) => ShareNote(noteColor: noteColor, note: noteData!)),
     );
   }
 
   @override
   void initState() {
     super.initState();
-    noteTitle = (widget.args[0] == 'new' ? '' : widget.args[1].title);
-    noteContent = (widget.args[0] == 'new' ? '' : widget.args[1].content);
+    noteTitle = (noteData == null ? '' : noteData!.title);
+    noteContent = (noteData == null ? '' : (noteData!.content ?? ''));
     noteColor =
-        (widget.args[0] == 'new' ? 'purple' : widget.args[1].color);
+        (noteData == null ? 'purple' : noteData!.color);
 
     _titleTextController.text =
-        (widget.args[0] == 'new' ? '' : widget.args[1].title);
+        (noteData == null ? '' : noteData!.title);
     _contentTextController.text =
-        (widget.args[0] == 'new' ? '' : widget.args[1].content);
+        (noteData == null ? '' : noteData!.content ?? '');
     _titleTextController.addListener(handleTitleTextChange);
     _contentTextController.addListener(handleNoteTextChange);
+    showShare = (noteTitle != '');
   }
 
   @override
@@ -137,14 +158,15 @@ class _NotesEdit extends State<NotesEdit> {
           onPressed: () => handleBackButton(),
         ),
         actions: [
-          IconButton(
+          showShare ? IconButton(
             icon: const Icon(
               Icons.share,
               color: Color(c1),
             ),
             tooltip: 'Share',
             onPressed: () => handleShare(),
-          ),
+          ) : const Text(''),
+
           IconButton(
             icon: const Icon(
               Icons.color_lens,
@@ -163,23 +185,25 @@ class _NotesEdit extends State<NotesEdit> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             FloatingActionButton(
-                heroTag: "Save Button",
+                heroTag: "Cancel Button",
                 child: const Icon(
                   Icons.cancel,
                   color: Color(c1),
                 ),
-                tooltip: 'Save',
+                tooltip: 'Cancel',
                 backgroundColor: const Color(c2),
-                onPressed: () => Navigator.pop(context)),
+                onPressed: () => Navigator.pop(context)
+            ),
             FloatingActionButton(
-                heroTag: "Cancel Button",
+                heroTag: "Save Button",
                 child: const Icon(
-                  Icons.done,
+                  Icons.save,
                   color: Color(c1),
                 ),
-                tooltip: 'Cancel',
+                tooltip: 'Save',
                 backgroundColor: const Color(c3),
-                onPressed: () => handleBackButton()),
+                onPressed: () => handleSave()
+            ),
           ],
         ),
       ),

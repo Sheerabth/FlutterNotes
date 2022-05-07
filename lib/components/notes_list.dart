@@ -78,7 +78,7 @@ class DisplayNote extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NotesEdit(args: ['update', noteData]),
+                    builder: (context) => NotesEdit(noteData: noteData),
                   ),
                 ).then((dynamic value) => {callAfterNavigatorPop()});
                 return;
