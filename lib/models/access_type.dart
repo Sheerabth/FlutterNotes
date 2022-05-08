@@ -1,6 +1,7 @@
 enum AccessType {
   owner,
-  editor
+  editor,
+  viewer
 }
 
 extension AccessTypeExtension on AccessType {
@@ -10,6 +11,8 @@ extension AccessTypeExtension on AccessType {
         return "owner";
       case AccessType.editor:
         return "editor";
+      case AccessType.viewer:
+        return "viewer";
       default:
         return "";
     }
@@ -19,6 +22,8 @@ extension AccessTypeExtension on AccessType {
     switch (accessType) {
       case "editor":
         return AccessType.editor;
+      case "viewer":
+        return AccessType.viewer;
       default:
         return AccessType.owner;
     }
