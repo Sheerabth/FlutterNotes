@@ -129,43 +129,28 @@ class _Home extends State<Home> {
                 color: Color(c1),
               ),
             ),
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () => handleSignOut(),
+            )
           ],
         ),
         // Floating Button
 
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: Container(
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              FloatingActionButton(
-                heroTag: "New Note",
-                child: const Icon(
-                  Icons.add,
-                  color: Color(c1),
-                ),
-                tooltip: 'New Notes',
-                backgroundColor: const Color(c4),
-                onPressed: () => {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            const NotesEdit()),
-                  ).then((dynamic value) => {afterNavigatorPop()})
-                },
-              ),
-              FloatingActionButton(
-                  child: const Icon(
-                    Icons.logout,
-                    color: Color(c1),
-                  ),
-                  tooltip: 'Sign out',
-                  backgroundColor: const Color(c4),
-                  onPressed: () => {handleSignOut()}),
-            ],
+        floatingActionButton: FloatingActionButton(
+          heroTag: "New Note",
+          child: const Icon(
+            Icons.add,
+            color: Color(c1),
           ),
+          tooltip: 'New Notes',
+          backgroundColor: const Color(c4),
+          onPressed: () => {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const NotesEdit()),
+            ).then((dynamic value) => {afterNavigatorPop()})
+          },
         ),
         body: FutureBuilder(
           future: handleRead(),

@@ -74,6 +74,7 @@ class _ShareNote extends State<ShareNote> {
                       if (_formKey.currentState!.validate()) {
                         await shareNote(
                             widget.note.id, emailController.text);
+                        emailController.clear();
                         setState(() {});
                       }
                     },
