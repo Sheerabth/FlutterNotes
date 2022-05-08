@@ -134,7 +134,7 @@ class NotesDAO {
     List<Tuple2<String, AccessType>> result = [];
     try {
       var queryResult = await connection.mappedResultsQuery(
-          "SELECT user_email, access_rights FROM user_notes WHERE note_id = @noteId:uuid and user_email != @currentUser",
+          "SELECT user_email, access_rights FROM user_notes WHERE note_id = @noteId:uuid",
           substitutionValues: {
             "noteId": id.toString(),
             "currentUser": FirebaseAuth.instance.currentUser!.email,
