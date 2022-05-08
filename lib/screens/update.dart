@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_notes/models/access_type.dart';
 import 'package:uuid_type/uuid_type.dart';
 
 import '../models/note.dart';
+import '../models/user_note.dart';
 import '../theme/note_theme.dart';
 import '../components/note_contents.dart';
 import '../components/color_picker.dart';
@@ -10,12 +12,12 @@ import './share.dart';
 
 class NotesEdit extends StatefulWidget {
 
-  final Note? noteData;
+  final UserNote? noteData;
 
   const NotesEdit({Key? key, this.noteData}) : super(key: key);
 
   @override
-  _NotesEdit createState() => _NotesEdit(noteData: noteData);
+  _NotesEdit createState() => noteData != null ? _NotesEdit(noteData: noteData, accessRights: noteData!.accessRights) : _NotesEdit();
 }
 
 class _NotesEdit extends State<NotesEdit> {
@@ -24,8 +26,9 @@ class _NotesEdit extends State<NotesEdit> {
   String noteColor = 'purple';
   bool showShare = false;
   Note? noteData;
+  AccessType accessRights;
 
-  _NotesEdit({this.noteData});
+  _NotesEdit({this.noteData, this.accessRights = AccessType.owner});
 
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _contentTextController = TextEditingController();
@@ -115,7 +118,7 @@ class _NotesEdit extends State<NotesEdit> {
     await handleSave();
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ShareNote(noteColor: noteColor, note: noteData!)),
+      MaterialPageRoute(builder: (context) => ShareNote(noteColor: noteColor, note: noteData!, accessRights: accessRights)),
     );
   }
 

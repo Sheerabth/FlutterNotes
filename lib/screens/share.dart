@@ -1,13 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_notes/models/access_type.dart';
+import 'package:uuid_type/uuid_type.dart';
 import '../theme/note_theme.dart';
 import '../models/note.dart';
 import '../dao/notes.dart';
+import 'package:tuple/tuple.dart';
 
 class ShareNote extends StatefulWidget {
   final String noteColor;
   final Note note;
+  final AccessType accessRights;
 
-  const ShareNote({Key? key, required this.noteColor, required this.note})
+  const ShareNote({Key? key, required this.noteColor, required this.note, required this.accessRights})
       : super(key: key);
 
   @override
@@ -19,6 +24,18 @@ class _ShareNote extends State<ShareNote> {
 
   final emailController = TextEditingController();
 
+  Future<void> shareNote(Uuid id, String email) async {
+    List<String> sharedUsers = await NotesDAO.getSharedEmails(id);
+    if (sharedUsers.contains(email) || email == FirebaseAuth.instance.currentUser!.email) {
+      const snackBar = SnackBar(
+        content: Text('Access already exists for this user'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return;
+    }
+    await NotesDAO.shareNote(id, email);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +44,7 @@ class _ShareNote extends State<ShareNote> {
         title: const Text('Share Note'),
       ),
       body: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             Form(
@@ -55,7 +72,7 @@ class _ShareNote extends State<ShareNote> {
                   ElevatedButton(
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        await NotesDAO.shareNote(
+                        await shareNote(
                             widget.note.id, emailController.text);
                         setState(() {});
                       }
@@ -66,8 +83,8 @@ class _ShareNote extends State<ShareNote> {
               ),
             ),
             const SizedBox(height: 30),
-            FutureBuilder<List<String>>(
-              future: NotesDAO.getSharedEmails(widget.note.id),
+            FutureBuilder<List<Tuple2<String, AccessType>>>(
+              future: NotesDAO.getAccessRights(widget.note.id),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
                   return Expanded(
@@ -76,7 +93,7 @@ class _ShareNote extends State<ShareNote> {
                       itemBuilder: (BuildContext context, int index) {
                         return Card(
                           child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 5),
+                              padding: const EdgeInsets.symmetric(vertical: 5),
                               child: Row(
                                 children: [
                                   Expanded(
@@ -91,7 +108,7 @@ class _ShareNote extends State<ShareNote> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(10),
                                         child: Text(
-                                          snapshot.data[index][0].toUpperCase(),
+                                          snapshot.data[index].item1[0].toUpperCase(),
                                           style: const TextStyle(
                                             color: Color(c1),
                                             fontSize: 15,
@@ -104,7 +121,8 @@ class _ShareNote extends State<ShareNote> {
                                       flex: 4,
                                       child: SingleChildScrollView(
                                           scrollDirection: Axis.horizontal,
-                                          child: Text(snapshot.data[index]))),
+                                          child: Text(snapshot.data[index].item1))),
+                                  snapshot.data[index].item2 != AccessType.owner && widget.accessRights == AccessType.owner?
                                   Expanded(
                                     flex: 1,
                                     child: IconButton(
@@ -112,11 +130,11 @@ class _ShareNote extends State<ShareNote> {
                                       onPressed: () async {
                                         await NotesDAO.revokeNoteAccess(
                                             widget.note.id,
-                                            snapshot.data[index]);
+                                            snapshot.data[index].item1);
                                         setState(() {});
                                       },
                                     ),
-                                  ),
+                                  ) : const Text(''),
                                 ],
                               )),
                         );
