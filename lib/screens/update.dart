@@ -65,6 +65,13 @@ class _NotesEdit extends State<NotesEdit> {
     if (noteTitle.isEmpty) {
       // Go back without saving
       if (noteContent.isEmpty) {
+        if(accessRights != AccessType.owner) {
+          const snackBar = SnackBar(
+            content: Text('Note cannot be empty.'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          return;
+        }
         setState(() {
           showShare = false;
         });
@@ -107,7 +114,7 @@ class _NotesEdit extends State<NotesEdit> {
 
   handleBackButton() async {
     await handleSave();
-    if (noteTitle == '' && noteData != null) {
+    if (noteTitle == '' && noteData != null && accessRights == AccessType.owner) {
       await NotesService.deleteNote([noteData!.id]);
     }
     Navigator.pop(context);
