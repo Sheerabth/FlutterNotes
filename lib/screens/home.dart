@@ -10,6 +10,7 @@ import 'package:flutter_notes/screens/sigin.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:uuid_type/uuid_type.dart';
 
+import '../models/access_type.dart';
 import '../models/user_note.dart';
 
 // Home Screen
@@ -47,8 +48,20 @@ class _Home extends State<Home> {
     });
   }
 
-  void handleDelete() async {
+  void handleDelete(BuildContext context) async {
+    for (UserNote userNote in notesData) {
+      if (selectedNoteIds.contains(userNote.id) &&
+          userNote.accessRights != AccessType.owner) {
+        const snackBar = SnackBar(
+          content: Text('Only notes with owner privileges can be deleted'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        return;
+      }
+    }
+
     await NotesService.deleteNote(selectedNoteIds);
+
     setState(() {
       selectedNoteIds = [];
     });
@@ -107,13 +120,17 @@ class _Home extends State<Home> {
           ),
           actions: [
             (selectedNoteIds.isNotEmpty
-                ? IconButton(
-                    icon: const Icon(
-                      Icons.delete,
-                      color: Color(c1),
-                    ),
-                    tooltip: 'Delete',
-                    onPressed: () => handleDelete(),
+                ? Builder(
+                    builder: (BuildContext context) {
+                      return IconButton(
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Color(c1),
+                        ),
+                        tooltip: 'Delete',
+                        onPressed: () => handleDelete(context)
+                      );
+                    },
                   )
                 : Container()),
             IconButton(
