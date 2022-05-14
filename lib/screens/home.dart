@@ -24,7 +24,7 @@ class Home extends StatefulWidget {
 class _Home extends State<Home> {
   late List<UserNote> notesData;
   List<Uuid> selectedNoteIds = [];
-  SortBy sortBy = SortBy.modifiedAt;
+  SortBy sortBy = SortBy.lastModified;
   SortOrder sortOrder = SortOrder.descending;
   User currentUser = FirebaseAuth.instance.currentUser!;
 

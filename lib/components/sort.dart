@@ -47,7 +47,7 @@ class _SortWidget extends State<SortWidget> {
             ListTile(
               title: const Text('Modified At'),
               leading: Radio<SortBy>(
-                value: SortBy.modifiedAt,
+                value: SortBy.lastModified,
                 groupValue: sortBy,
                 onChanged: (SortBy? value) {
                   setState(() {

@@ -6,9 +6,10 @@ import '../models/note.dart';
 import '../models/user_note.dart';
 
 import '../dao/cloud_storage.dart';
+import '../theme/note_theme.dart';
 
 enum SortBy {
-  modifiedAt,
+  lastModified,
   title,
 }
 
@@ -21,23 +22,24 @@ class NotesService {
   static Future<List<UserNote>> getNotes(
       SortBy sortBy, SortOrder sortOrder) async {
     List<UserNote> userNotes = await NotesDAO.getAllNotes();
+    List<Map<String, dynamic>> notesData = userNotes.map((userNote) => userNote.toMap()).toList();
 
-    // TODO: Add support for sorting
+    if (sortBy == SortBy.lastModified) {
+      if (sortOrder == SortOrder.descending) {
+        notesData.sort((a, b) => (dateFormat.parse(b[sortBy.name]))
+            .compareTo(dateFormat.parse(a[sortBy.name])));
+      } else {
+        notesData.sort((a, b) => (dateFormat
+            .parse(a[sortBy.name])
+            .compareTo(dateFormat.parse(b[sortBy.name]))));
+      }
+    } else if (sortOrder == SortOrder.descending) {
+      notesData.sort((a, b) => (b[sortBy.name]).compareTo(a[sortBy.name]));
+    } else {
+      notesData.sort((a, b) => (a[sortBy.name]).compareTo(b[sortBy.name]));
+    }
 
-    // if (sortBy == SortBy.modifiedAt) {
-    //   if (sortOrder == SortOrder.descending) {
-    //     notesData.sort((a, b) => (dateFormat.parse(b[sortBy.name]))
-    //         .compareTo(dateFormat.parse(a[sortBy.name])));
-    //   } else {
-    //     notesData.sort((a, b) => (dateFormat
-    //         .parse(a[sortBy.name])
-    //         .compareTo(dateFormat.parse(b[sortBy.name]))));
-    //   }
-    // } else if (sortOrder == SortOrder.descending) {
-    //   notesData.sort((a, b) => (b[sortBy.name]).compareTo(a[sortBy.name]));
-    // } else {
-    //   notesData.sort((a, b) => (a[sortBy.name]).compareTo(b[sortBy.name]));
-    // }
+    userNotes = notesData.map((noteData) => UserNote(id: noteData['id'], title: noteData['title'], color: noteData['color'], lastModified: noteData['lastModified'], accessRights: noteData['accessRights'])).toList();
     return userNotes;
   }
 
