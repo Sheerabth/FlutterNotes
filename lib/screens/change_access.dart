@@ -57,7 +57,7 @@ class _ChangeAccess extends State<ChangeAccess> {
                                   flex: 4,
                                   child: SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,
-                                      child: Text(widget.availableAccessTypes[index].value)
+                                      child: Text(widget.availableAccessTypes[index].name)
                                   )
                               ),
                               accessRights == widget.availableAccessTypes[index] ?

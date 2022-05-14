@@ -30,7 +30,7 @@ class NotesDAO {
           substitutionValues: {
             "noteId": note.id.toString(),
             "userEmail": FirebaseAuth.instance.currentUser!.email,
-            "accessRights": AccessType.owner.value
+            "accessRights": AccessType.owner.name
           });
     } on SocketException catch (_, e) {
       debugPrint("Socket Exception!!!");
@@ -81,7 +81,7 @@ class NotesDAO {
             lastModified: queryEntry['notes']!['last_modified'],
 
             accessRights: AccessType.values.firstWhere((element) {
-              return element.value ==
+              return element.name ==
                   queryEntry['user_notes']!['access_rights'];
             }));
         result.add(userNote);

@@ -36,7 +36,7 @@ class UserNote extends Note {
       'title': title,
       'color': color,
       'lastModified': lastModified,
-      'accessRights': accessRights.value,
+      'accessRights': accessRights.name,
       'content': content
     }.toString();
   }
