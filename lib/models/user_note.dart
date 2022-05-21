@@ -34,6 +34,7 @@ class UserNote extends Note {
     return {
       'id': id,
       'title': title,
+      'preview': preview,
       'color': color,
       'lastModified': lastModified,
       'accessRights': accessRights.name,

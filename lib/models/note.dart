@@ -35,6 +35,7 @@ class Note {
       data['content'] = content;
     }
     data['title'] = title;
+    data['preview'] = preview;
     data['color'] = color;
     data['lastModified'] = lastModified;
     return data;

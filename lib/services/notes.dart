@@ -39,7 +39,7 @@ class NotesService {
       notesData.sort((a, b) => (a[sortBy.name]).compareTo(b[sortBy.name]));
     }
 
-    userNotes = notesData.map((noteData) => UserNote(id: noteData['id'], title: noteData['title'], color: noteData['color'], lastModified: noteData['lastModified'], accessRights: noteData['accessRights'])).toList();
+    userNotes = notesData.map((noteData) => UserNote(id: noteData['id'], title: noteData['title'], preview: noteData['preview'], color: noteData['color'], lastModified: noteData['lastModified'], accessRights: noteData['accessRights'])).toList();
     return userNotes;
   }
 
