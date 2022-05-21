@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'home.dart';
 
 class SignIn extends StatefulWidget {
@@ -40,20 +41,51 @@ class _SignIn extends State<SignIn> {
     return MaterialApp(
       title: 'SignIn',
       home: Scaffold(
-        body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: signInWithGoogle,
-                    child: const Text("Sign in with Google"),
-                  ),
-                ],
-              ),
-            ]
+        body: Center(
+         child: Card(
+             color: Theme.of(context).colorScheme.surfaceVariant,
+             child: SizedBox(
+               width: 300,
+               height: 300,
+               child: Center(
+                 child: Column(
+                     mainAxisAlignment: MainAxisAlignment.center,
+                     crossAxisAlignment: CrossAxisAlignment.center,
+                     children: <Widget>[
+                       const Image(image: AssetImage('assets/icon/icon.png'), width: 50, height: 50,),
+                       const Padding(
+                         padding: EdgeInsets.all(10),
+                         child: Text(
+                           "Flutter Notes",
+                           style: TextStyle(
+                               fontSize: 35,
+                               fontWeight: FontWeight.bold,
+                              fontFamily: 'ProductSans'
+                           ),
+                         ),
+                       ),
+                       const Padding(
+                         padding: EdgeInsets.all(10),
+                         child: Text(
+                           "A notes app built in flutter",
+                         ),
+                       ),
+                       const Divider(),
+                       Row(
+                         mainAxisAlignment: MainAxisAlignment.center,
+                         children: [
+                           SignInButton(
+                             Buttons.Google,
+                             text: "Continue with Google",
+                             onPressed: signInWithGoogle,
+                           ),
+                         ],
+                       ),
+                     ]
+                 ),
+               ),
+             )
+         ),
         )
       ),
     );
